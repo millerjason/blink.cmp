@@ -3,6 +3,8 @@ local GAP_PENALTY = -1
 
 -- bonus for matching the first character of the haystack
 local PREFIX_BONUS = 6
+-- bonus for exact prefix match (needle is a prefix of haystack)
+local EXACT_PREFIX_BONUS = 12
 -- bonus for matching character after a delimiter in the haystack (e.g. space, comma, underscore, slash, etc)
 local DELIMITER_BONUS = 4
 -- bonus for haystack == needle
@@ -66,13 +68,17 @@ local function match(needle, haystack)
   local exact = needle == haystack
   if exact then score = score + EXACT_MATCH_BONUS end
 
+  -- Check for exact prefix match (case-insensitive)
+  local is_exact_prefix = #needle < #haystack and haystack:lower():sub(1, #needle) == needle:lower()
+  if is_exact_prefix then score = score + EXACT_PREFIX_BONUS end
+
   return score, exact
 end
 
-assert(match('fbb', 'barbazfoobarbaz') == 20, 'fbb should match barbazfoobarbaz with score 18')
-assert(match('foo', '_foobar') == 28, 'foo should match foobar with score 29')
-assert(match('Foo', 'foobar') == 29, 'foo should match foobar with score 29')
-assert(match('foo', 'foobar') == 30, 'foo should match foobar with score 30')
+assert(match('fbb', 'barbazfoobarbaz') == 20, 'fbb should match barbazfoobarbaz with score 20')
+assert(match('foo', '_foobar') == 28, 'foo should match _foobar with score 28 (no prefix bonus due to underscore)')
+assert(match('Foo', 'foobar') == 41, 'Foo should match foobar with score 41 (includes exact prefix bonus)')
+assert(match('foo', 'foobar') == 42, 'foo should match foobar with score 42 (includes exact prefix bonus)')
 assert(match('foo', 'fobar') == nil, 'foo should not match fobar')
 
 return match

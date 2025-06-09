@@ -113,8 +113,11 @@ pub fn fuzzy(
         })
         .collect::<Vec<_>>();
 
-    // Get the score for each match, adding score_offset, frecency and proximity bonus
+    // Get the score for each match, adding score_offset, frecency, proximity and prefix bonus
     let nearby_words: HashSet<String> = HashSet::from_iter(opts.nearby_words.unwrap_or_default());
+    let keyword_range = keyword::get_keyword_range(line, cursor_col, opts.match_suffix);
+    let needle = line[keyword_range.0..keyword_range.1].to_lowercase();
+
     let match_scores = matches
         .iter()
         .map(|mtch| {
@@ -131,6 +134,17 @@ pub fn fuzzy(
             } else {
                 0
             };
+
+            // Add prefix bonus for exact prefix matches (case-insensitive)
+            let haystack_text = &haystack_labels[mtch.index_in_haystack as usize];
+            let prefix_bonus = if !needle.is_empty()
+                && needle.len() < haystack_text.len()
+                && haystack_text.to_lowercase().starts_with(&needle) {
+                12 // Same bonus as Lua implementation
+            } else {
+                0
+            };
+
             let mut score_offset = haystack[mtch.index_in_haystack as usize].score_offset;
             // 15 = snippet
             // TODO: use an enum for the kind
@@ -140,7 +154,7 @@ pub fn fuzzy(
 
             (
                 mtch.index_in_haystack,
-                (mtch.score as i32) + frecency_score + nearby_words_score + score_offset,
+                (mtch.score as i32) + frecency_score + nearby_words_score + score_offset + prefix_bonus,
             )
         })
         .collect::<HashMap<_, _>>();

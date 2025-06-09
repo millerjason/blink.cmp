@@ -173,11 +173,18 @@ function cmdline:get_completions(context, callback)
           start_pos = start_pos + #prefix
         end
 
+        -- Check if the completion is an exact prefix match
+        local is_exact_prefix = current_arg_prefix ~= '' and string.find(filter_text:lower(), current_arg_prefix:lower(), 1, true) == 1
+
+        -- Create sort text that prioritizes exact prefix matches
+        local sort_prefix = is_exact_prefix and '0_' or '1_'
+        local sort_text = sort_prefix .. filter_text:lower():gsub('^([!-@\\[-`])', '~%1')
+
         local item = {
           label = filter_text,
           filterText = filter_text,
-          -- move items starting with special characters to the end of the list
-          sortText = filter_text:lower():gsub('^([!-@\\[-`])', '~%1'),
+          -- prioritize exact prefix matches, then move items starting with special characters to the end
+          sortText = sort_text,
           textEdit = {
             newText = new_text,
             insert = {
@@ -197,11 +204,15 @@ function cmdline:get_completions(context, callback)
         items[#items + 1] = item
 
         if completion_type == 'option' and cmdline:is_boolean_option(filter_text) then
-          filter_text = 'no' .. filter_text
+          local no_filter_text = 'no' .. filter_text
+          local is_no_exact_prefix = current_arg_prefix ~= '' and string.find(no_filter_text:lower(), current_arg_prefix:lower(), 1, true) == 1
+          local no_sort_prefix = is_no_exact_prefix and '0_' or '1_'
+          local no_sort_text = no_sort_prefix .. no_filter_text:lower():gsub('^([!-@\\[-`])', '~%1')
+
           items[#items + 1] = vim.tbl_deep_extend('force', {}, item, {
-            label = filter_text,
-            filterText = filter_text,
-            sortText = filter_text,
+            label = no_filter_text,
+            filterText = no_filter_text,
+            sortText = no_sort_text,
             textEdit = { newText = 'no' .. new_text },
           })
         end
