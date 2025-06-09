@@ -173,6 +173,17 @@ function cmdline:get_completions(context, callback)
           start_pos = start_pos + #prefix
         end
 
+        -- Special handling for file paths - adjust filter_text to only include the part after the last slash
+        -- when the current_arg_prefix contains a slash
+        if is_file_completion and current_arg_prefix:find('/', 1, true) then
+          local last_slash_pos = current_arg_prefix:match(".*()/")?
+          if last_slash_pos then
+            -- For filtering purposes, only use the part after the last slash
+            local base_name = completion:match("[^/]*$") or completion
+            filter_text = base_name
+          end
+        end
+
         -- Check if the completion is an exact prefix match
         local is_exact_prefix = current_arg_prefix ~= '' and string.find(filter_text:lower(), current_arg_prefix:lower(), 1, true) == 1
 
