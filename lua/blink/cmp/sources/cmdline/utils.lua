@@ -1,5 +1,6 @@
 local utils = {}
 
+local constants = require('blink.cmp.sources.cmdline.constants')
 local path_lib = require('blink.cmp.sources.path.lib')
 
 ---@param path string
@@ -12,6 +13,21 @@ local function fnameescape(path)
   -- Unescape %:
   path = path:gsub('\\(%%:)', '%1')
   return path
+end
+
+---@param completion_type string
+---@param line string
+---@return boolean
+function utils.is_path_completion(completion_type, line)
+  if vim.tbl_contains(constants.completion_types.path, completion_type) then return true end
+
+  if completion_type == 'shellcmd' then
+    -- Treat :!<path> as path completion when the first shellcmd argument looks like a path
+    local token = line:sub(2):match('^%s*(%S+)')
+    if token and token:match('^[~./]') then return true end
+  end
+
+  return false
 end
 
 -- Try to match the content inside the first pair of quotes (excluding)

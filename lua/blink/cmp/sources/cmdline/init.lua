@@ -38,7 +38,7 @@ function cmdline:get_trigger_characters() return { ' ', '.', '#', '-', '=', '/',
 function cmdline:get_completions(context, callback)
   local completion_type = utils.get_completion_type(context.mode)
 
-  local is_path_completion = vim.tbl_contains(constants.completion_types.path, completion_type)
+  local is_path_completion = cmdline_utils.is_path_completion(completion_type, context.line)
   local is_buffer_completion = vim.tbl_contains(constants.completion_types.buffer, completion_type)
   local is_filename_modifier_completion = cmdline_utils.contains_filename_modifiers(context.line, completion_type)
   local is_wildcard_completion = cmdline_utils.contains_wildcard(context.line)
@@ -202,7 +202,9 @@ function cmdline:get_completions(context, callback)
           if current_arg == '~' then label = completion end
           filter_text = path_lib.basename_with_sep(completion)
           new_text = vim.fn.fnameescape(completion)
-          if arguments[1] == 'set' then
+          if completion_type == 'shellcmd' and current_arg_prefix:sub(1, 1) == '!' then
+            new_text = '!' .. new_text
+          elseif arguments[1] == 'set' then
             new_text = current_arg_prefix:sub(1, current_arg_prefix:find('=') or #current_arg_prefix) .. new_text
           end
 
