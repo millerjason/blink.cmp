@@ -48,7 +48,11 @@ end
 
 function source:enabled()
   -- user defined
-  if not self.config.enabled() then return false end
+  local user_enabled = self.config.enabled
+  if user_enabled ~= nil then
+    if type(user_enabled) == 'function' then return user_enabled() end
+    return user_enabled
+  end
 
   -- source defined
   if self.module.enabled == nil then return true end
