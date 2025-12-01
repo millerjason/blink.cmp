@@ -1,4 +1,4 @@
-*blink-cmp.txt*         For NVIM v0.10.0         Last change: 2025 November 12
+*blink-cmp.txt*         For NVIM v0.10.0         Last change: 2025 December 01
 
 ==============================================================================
 Table of Contents                                *blink-cmp-table-of-contents*
@@ -1965,11 +1965,16 @@ LSP specific options while setting them up. Some examples:
     
     -- For `rust-analyzer`
     lspconfig['rust-analyzer'].setup({
-      completion = {
-        callable = {
-          snippets = 'add_parenthesis'
-        }
-      }
+      settings = {
+        ['rust-analyzer'] = {
+          completion = {
+            callable = {
+              -- https://rust-analyzer.github.io/book/configuration.html#completion.callable.snippets
+              snippets = 'add_parentheses', -- or 'none'
+            },
+          },
+        },
+      },
     })
     
     -- For `lua_ls`
