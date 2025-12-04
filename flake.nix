@@ -60,7 +60,7 @@
           };
 
           blink-cmp = pkgs.vimUtils.buildVimPlugin {
-            pname = "blink-cmp";
+            pname = "blink.cmp";
             inherit version;
             src = fs.toSource {
               root = ./.;
