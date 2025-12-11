@@ -59,7 +59,7 @@ end
 function utils.contains_wildcard(line) return line:find('[%*%?%[%]]') ~= nil end
 
 --- Split the command line into arguments, handling path escaping and trailing spaces.
---- For path completions, split by paths and normalize each one if needed.
+--- For path completions, split by paths and escape unquoted args with spaces.
 --- For other completions, splits by spaces and preserves trailing empty arguments.
 ---@param line string
 ---@param is_path_completion boolean
@@ -73,9 +73,8 @@ function utils.smart_split(line, is_path_completion)
 
     for i = 2, #tokens do
       local arg = tokens[i]
-      -- Escape argument if it contains unescaped spaces
-      -- Some commands may expect escaped paths (:edit), others may not (:view)
-      if arg and arg ~= '' and arg ~= '|' and not arg:find('\\ ') then arg = fnameescape(arg) end
+      -- Escape only unquoted args with spaces
+      if arg and not arg:match('^[\'"]') and not arg:find('\\ ') and arg:find(' ') then arg = fnameescape(arg) end
       table.insert(args, arg)
     end
     return line, { cmd, unpack(args) }
