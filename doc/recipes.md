@@ -147,6 +147,38 @@ completion = {
 }
 ```
 
+### Accept a completion without visual feedback
+
+Full discussion: https://github.com/saghen/blink.cmp/discussions/2304
+
+You can accept a completion item without visual feedback (when the menu or ghost
+text is not visible) by using the `force` option.
+
+**Option 1: Select the first item if nothing is selected, then accept it**
+
+```lua
+['<C-y>'] = {
+  function(cmp)
+    return cmp.select_and_accept({ force = true })
+  end,
+  'fallback',
+}
+```
+
+**Option 2: Accept the first item in the list**
+
+```lua
+['<C-y>'] = {
+  function(cmp)
+    return cmp.accept({ index = 1, force = true })
+  end,
+  'fallback',
+}
+```
+
+Note that if you already pre-select the first item in the list (see
+[`completion.list`](./configuration/completion.md#list)), the `index` option is not needed.
+
 ### Hide Copilot on suggestion
 
 ```lua

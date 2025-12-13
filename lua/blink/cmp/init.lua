@@ -146,7 +146,7 @@ end
 --- @param opts? blink.cmp.CompletionListAcceptOpts
 function cmp.accept(opts)
   opts = opts or {}
-  if not cmp.is_visible() then return end
+  if not cmp.is_visible() and not opts.force then return end
 
   local completion_list = require('blink.cmp.completion.list')
   local item = opts.index ~= nil and completion_list.items[opts.index] or completion_list.get_selected_item()
@@ -159,14 +159,15 @@ end
 --- Select the first completion item, if there's no selection, and accept
 --- @param opts? blink.cmp.CompletionListSelectAndAcceptOpts
 function cmp.select_and_accept(opts)
-  if not cmp.is_visible() then return end
+  opts = opts or {}
+  if not cmp.is_visible() and not opts.force then return end
 
   local completion_list = require('blink.cmp.completion.list')
   vim.schedule(
     function()
       completion_list.accept({
         index = completion_list.selected_item_idx or 1,
-        callback = opts and opts.callback,
+        callback = opts.callback,
       })
     end
   )
