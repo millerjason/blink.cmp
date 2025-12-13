@@ -1,4 +1,4 @@
-*blink-cmp.txt*         For NVIM v0.10.0         Last change: 2025 December 11
+*blink-cmp.txt*         For NVIM v0.10.0         Last change: 2025 December 13
 
 ==============================================================================
 Table of Contents                                *blink-cmp-table-of-contents*
@@ -465,6 +465,40 @@ Based on #382 <https://github.com/Saghen/blink.cmp/issues/382>
       }
     }
 <
+
+
+ACCEPT A COMPLETION WITHOUT VISUAL FEEDBACK ~
+
+Full discussion: https://github.com/saghen/blink.cmp/discussions/2304
+
+You can accept a completion item without visual feedback (when the menu or
+ghost text is not visible) by using the `force` option.
+
+**Option 1: Select the first item if nothing is selected, then accept it**
+
+>lua
+    ['<C-y>'] = {
+      function(cmp)
+        return cmp.select_and_accept({ force = true })
+      end,
+      'fallback',
+    }
+<
+
+**Option 2: Accept the first item in the list**
+
+>lua
+    ['<C-y>'] = {
+      function(cmp)
+        return cmp.accept({ index = 1, force = true })
+      end,
+      'fallback',
+    }
+<
+
+Note that if you already pre-select the first item in the list (see
+`completion.list` <./configuration/completion.md#list>), the `index` option is
+not needed.
 
 
 HIDE COPILOT ON SUGGESTION ~
@@ -1631,6 +1665,7 @@ COMMANDS ~
 - `cancel`: Reverts `completion.list.selection.auto_insert` and hides the completion menu
 - `accept`: Accepts the currently selected item
     - Optionally pass an index to select a specific item in the list: `function(cmp) cmp.accept({ index = 1 }) end`
+    - Optionally force accept without visual feedback (no menu, no ghost text visible): `function(cmp) cmp.accept({ force = true }) end`
     - Optionally pass a `callback` to run after the item is accepted: `function(cmp) cmp.accept({ callback = function() some_function() end`
 - `accept_and_enter`: Accepts the currently selected item and feeds an enter key to neovim
     - Useful in `cmdline` mode to accept the current item and run the command
