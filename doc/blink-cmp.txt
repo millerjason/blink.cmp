@@ -1,4 +1,4 @@
-*blink-cmp.txt*         For NVIM v0.10.0         Last change: 2025 December 13
+*blink-cmp.txt*         For NVIM v0.10.0         Last change: 2025 December 15
 
 ==============================================================================
 Table of Contents                                *blink-cmp-table-of-contents*
@@ -491,6 +491,19 @@ ghost text is not visible) by using the `force` option.
     ['<C-y>'] = {
       function(cmp)
         return cmp.accept({ index = 1, force = true })
+      end,
+      'fallback',
+    }
+<
+
+**Option 3: If there is only one completion candidate, select and accept it
+without showing the completion menu; otherwise, open the completion menu and
+select the first candidate**
+
+>lua
+    ['<C-y>'] = {
+      function(cmp)
+        return cmp.show_and_insert_or_accept_single({ force = true })
       end,
       'fallback',
     }
