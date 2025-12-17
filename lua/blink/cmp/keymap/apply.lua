@@ -3,6 +3,7 @@ local apply = {}
 local snippet_commands = { 'snippet_forward', 'snippet_backward', 'show_signature', 'hide_signature' }
 
 local DESC_PREFIX = 'blink.cmp: '
+apply.DESC_PREFIX = DESC_PREFIX
 
 -- Generates description based on commands
 --- @param commands blink.cmp.KeymapCommand[]
@@ -34,7 +35,7 @@ end
 function apply.keymap_to_current_buffer(keys_to_commands)
   -- skip if we've already applied the keymaps
   for _, mapping in ipairs(vim.api.nvim_buf_get_keymap(0, 'i')) do
-    if mapping.desc and mapping.desc:find('^' .. DESC_PREFIX) then return end
+    if mapping.desc and vim.startswith(mapping.desc, DESC_PREFIX) then return end
   end
 
   -- insert mode: uses both snippet and insert commands
@@ -109,7 +110,7 @@ end
 function apply.term_keymaps(keys_to_commands)
   -- skip if we've already applied the keymaps
   for _, mapping in ipairs(vim.api.nvim_buf_get_keymap(0, 't')) do
-    if mapping.desc and mapping.desc:find('^' .. DESC_PREFIX) then return end
+    if mapping.desc and vim.startswith(mapping.desc, DESC_PREFIX) then return end
   end
 
   -- terminal mode: uses insert commands only
@@ -143,7 +144,7 @@ end
 function apply.cmdline_keymaps(keys_to_commands)
   -- skip if we've already applied the keymaps
   for _, mapping in ipairs(vim.api.nvim_get_keymap('c')) do
-    if mapping.desc and mapping.desc:find('^' .. DESC_PREFIX) then return end
+    if mapping.desc and vim.startswith(mapping.desc, DESC_PREFIX) then return end
   end
 
   -- cmdline mode: uses only insert commands
