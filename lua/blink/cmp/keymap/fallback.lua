@@ -23,7 +23,9 @@ function fallback.get_non_blink_global_mapping_for_key(mode, key)
   for _, mapping in ipairs(mappings) do
     --- @cast mapping blink.cmp.Fallback
     local mapping_key = vim.api.nvim_replace_termcodes(mapping.lhs, true, true, true)
-    if mapping_key == normalized_key and not vim.startswith(mapping.desc, DESC_PREFIX) then return mapping end
+    if mapping_key == normalized_key and (not mapping.desc or not vim.startswith(mapping.desc, DESC_PREFIX)) then
+      return mapping
+    end
   end
 end
 
@@ -39,7 +41,9 @@ function fallback.get_non_blink_buffer_mapping_for_key(mode, key)
   for _, mapping in ipairs(buffer_mappings) do
     --- @cast mapping blink.cmp.Fallback
     local mapping_key = vim.api.nvim_replace_termcodes(mapping.lhs, true, true, true)
-    if mapping_key == normalized_key and not vim.startswith(mapping.desc, DESC_PREFIX) then return mapping end
+    if mapping_key == normalized_key and (not mapping.desc or not vim.startswith(mapping.desc, DESC_PREFIX)) then
+      return mapping
+    end
   end
 end
 
