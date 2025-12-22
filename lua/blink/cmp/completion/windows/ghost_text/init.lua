@@ -112,7 +112,7 @@ function ghost_text.draw_preview()
       virt_text_pos = 'inline',
       virt_text = { { display_lines[1], 'BlinkCmpGhostText' } },
       virt_lines = virt_lines,
-      hl_mode = 'combine',
+      hl_mode = 'replace',
     })
   ghost_text.extmark_buf = buf
 
