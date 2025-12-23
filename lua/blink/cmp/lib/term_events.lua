@@ -26,8 +26,8 @@ function term_events.new(opts)
   }, { __index = term_events })
 end
 
-local term_on_key_ns = vim.api.nvim_create_namespace('blink-term-keypress')
-local term_command_start_ns = vim.api.nvim_create_namespace('blink-term-command-start')
+local term_on_key_ns = vim.api.nvim_create_namespace('blink_cmp_term_keypress')
+local term_command_start_ns = vim.api.nvim_create_namespace('blink_cmp_term_command_start')
 
 --- Normalizes the autocmds + ctrl+c into a common api and handles ignored events
 function term_events:listen(opts)
