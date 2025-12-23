@@ -87,8 +87,8 @@ function term_events:listen(opts)
   vim.api.nvim_create_autocmd('TermRequest', {
     callback = function(args)
       if string.match(args.data.sequence, '^\027]133;B') then
-        local row, col = table.unpack(args.data.cursor)
-        vim.api.nvim_buf_set_extmark(args.buf, term_command_start_ns, row - 1, col, {})
+        local row, col = unpack(args.data.cursor)
+        pcall(vim.api.nvim_buf_set_extmark, args.buf, term_command_start_ns, row - 1, col, {})
       end
     end,
   })
