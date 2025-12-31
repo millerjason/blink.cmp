@@ -1,4 +1,4 @@
-*blink-cmp.txt*         For NVIM v0.10.0         Last change: 2025 December 15
+*blink-cmp.txt*         For NVIM v0.10.0         Last change: 2025 December 31
 
 ==============================================================================
 Table of Contents                                *blink-cmp-table-of-contents*
@@ -1882,6 +1882,26 @@ use `extended_filetypes`.
               php = { 'phpdoc' },
               cpp = { 'unreal' }
             }
+          }
+        }
+      }
+    }
+<
+
+To filter which snippets are shown, use `filter_snippets` which provides the
+filetype and name of the snippets file. This function returns `true` if the
+snippet should be included in completion results, and `false` if it should be
+filtered out.
+
+>lua
+    sources = {
+      providers = {
+        snippets = {
+          opts = {
+            -- disable friendly-snippets frameworks
+            filter_snippets = function(ft, file)
+              return not (string.match(file, "friendly.snippets") and string.match(file, "framework"))
+            end,
           }
         }
       }
