@@ -6,7 +6,7 @@ title: Sources
 Check out the [recipes](../recipes.md#sources) for some common configurations
 :::
 
-Blink provides a sources interface, modelled after LSPs, for getting completion items, trigger characters, documentation and signature help. The `lsp`, `path`, `snippets`, `luasnip`, `buffer`, and `omni` sources are built-in. You may add additional [community sources](#community-sources) as well. Check out the [source boilerplate](../development/source-boilerplate.md) to learn how to write your own!
+Blink provides a sources interface, modelled after LSPs, for getting completion items, trigger characters, documentation and signature help. The `lsp`, `path`, `snippets`, `buffer`, and `omni` sources are built-in. You may add additional [community sources](#community-sources) as well. Check out the [source boilerplate](../development/source-boilerplate.md) to learn how to write your own!
 
 ## Providers
 
