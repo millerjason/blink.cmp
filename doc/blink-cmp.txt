@@ -1,4 +1,4 @@
-*blink-cmp.txt*          For NVIM v0.10.0         Last change: 2026 January 12
+*blink-cmp.txt*          For NVIM v0.10.0         Last change: 2026 January 16
 
 ==============================================================================
 Table of Contents                                *blink-cmp-table-of-contents*
@@ -926,9 +926,7 @@ Original discussion <https://github.com/Saghen/blink.cmp/discussions/1146>
                         icon = dev_icon
                     end
                 else
-                    icon = require("lspkind").symbolic(ctx.kind, {
-                        mode = "symbol",
-                    })
+                    icon = require("lspkind").symbol_map[ctx.kind] or ""
                 end
     
                 return icon .. ctx.icon_gap
@@ -969,7 +967,7 @@ kinds.
             kind_icon = {
               text = function(ctx)
                 if ctx.source_name ~= "Path" then
-                  return require("lspkind").symbolic(ctx.kind, { mode = "symbol" }) .. ctx.icon_gap
+                  return require("lspkind").symbol_map[ctx.kind] or "" .. ctx.icon_gap
                 end
     
                 local is_unknown_type = vim.tbl_contains({ "link", "socket", "fifo", "char", "block", "unknown" }, ctx.item.data.type)
